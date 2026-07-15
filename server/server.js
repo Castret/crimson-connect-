@@ -30,21 +30,45 @@ const emergencyRequestsRoutes = require('./routes/emergencyRoutes');
 
 const app = express();
 const server = http.createServer(app);
+
+const allowedOrigins = [
+  "https://crimson-connect-five.vercel.app",
+  "http://localhost:5173"
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+  })
+);
+
+app.options("*", cors());
+
+app.use(helmet({
+  crossOriginResourcePolicy: false
+}));
+
+const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: '*', // In production, limit this to client URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    origin: [
+      "https://crimson-connect-five.vercel.app",
+      "http://localhost:5173"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
   }
 });
+
 app.set('socketio', io);
 
 // Security & Utility Middleware
 app.use(helmet({
   crossOriginResourcePolicy: false // Allow loading uploaded images from client
-}));
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
-  credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
