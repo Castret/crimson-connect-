@@ -29,7 +29,6 @@ const emergencyRequestsRoutes = require('./routes/emergencyRoutes');
 
 
 const app = express();
-const server = http.createServer(app);
 
 const allowedOrigins = [
   "https://crimson-connect-five.vercel.app",
@@ -66,10 +65,6 @@ const io = new Server(server, {
 
 app.set('socketio', io);
 
-// Security & Utility Middleware
-app.use(helmet({
-  crossOriginResourcePolicy: false // Allow loading uploaded images from client
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
